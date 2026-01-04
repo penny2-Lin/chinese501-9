@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>鬼滅之刃：語詞呼吸法</title>
+    <style>
+        :root { --primary: #10b981; --secondary: #1a1a1a; --accent: #ff4444; --text: #ffffff; }
+        * { box-sizing: border-box; touch-action: manipulation; }
+        body { font-family: "PingFang TC", "Microsoft JhengHei", sans-serif; background: var(--secondary); color: var(--text); margin: 0; display: flex; flex-direction: column; height: 100vh; overflow: hidden; }
+        header { flex: 0 0 auto; text-align: center; padding: 10px; background: linear-gradient(180deg, #064e3b, #1a1a1a); border-bottom: 3px solid var(--primary); }
+        h1 { margin: 0; font-size: 1.4rem; color: #fff; text-shadow: 0 0 10px var(--primary); }
+        #game-board { flex: 1; display: flex; flex-direction: column; justify-content: space-evenly; padding: 15px; }
+        .story-container { background: rgba(0,0,0,0.6); padding: 15px; border-radius: 12px; line-height: 2.3; font-size: clamp(1rem, 2.2vh, 1.3rem); text-align: justify; border: 1px solid #333; }
+        .drop-zone { display: inline-flex; justify-content: center; align-items: flex-end; min-width: 4.5em; height: 1.5em; margin: 0 4px; border-bottom: 3px solid var(--accent); color: #00ffcc; font-weight: bold; cursor: pointer; }
+        .word-bank { flex: 0 0 auto; display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; padding: 15px; background: #222; }
+        .word-card { background: #333; color: #fff; padding: 8px 15px; border-radius: 5px; border: 1px solid var(--primary); font-weight: bold; cursor: grab; font-size: clamp(0.9rem, 2vh, 1.1rem); }
+        .check-btn { margin: 15px auto; display: block; background: var(--accent); color: white; border: none; padding: 12px 50px; font-size: 1.2rem; font-weight: bold; border-radius: 50px; cursor: pointer; box-shadow: 0 0 15px rgba(255, 68, 68, 0.5); }
+        .correct { color: #00ff00 !important; border-bottom-color: #00ff00 !important; }
+        .wrong { color: var(--accent) !important; border-bottom-color: var(--accent) !important; }
+    </style>
+</head>
+<body>
+<header><h1>鬼滅之刃：全集中語詞呼吸</h1></header>
+<div id="game-board">
+    <div class="story-container">
+        炭治郎每天接受嚴酷的<span class="drop-zone" data-ans="鍛鍊"></span>。他像破土的<span class="drop-zone" data-ans="幼芽"></span>，展現強韌生命力。他必須時刻<span class="drop-zone" data-ans="維持"></span>全集中呼吸。訓練道路十分<span class="drop-zone" data-ans="崎嶇"></span>，甚至有<span class="drop-zone" data-ans="腐爛"></span>的樹木擋道。他鬥志堅強，如同在爐火中<span class="drop-zone" data-ans="鍛造"></span>日輪刀一般。面對惡鬼強大的<span class="drop-zone" data-ans="衝擊"></span>，讓他<span class="drop-zone" data-ans="屢屢"></span>陷入絕境。壓力有時像對抗<span class="drop-zone" data-ans="癌症"></span>般難受，但<span class="drop-zone" data-ans="即使"></span>遍體鱗傷，他也不放棄。這時喝口水比清涼的<span class="drop-zone" data-ans="椰子"></span>汁還珍貴。他精準揮刀來<span class="drop-zone" data-ans="減少"></span>體力消耗，彌豆子也<span class="drop-zone" data-ans="給予"></span>他力量。他在場上拚命<span class="drop-zone" data-ans="奮戰"></span>，最後獲贈一枚紀念<span class="drop-zone" data-ans="銅牌"></span>，展現如熱血<span class="drop-zone" data-ans="拳擊"></span>手般的鬥志！
+    </div>
+</div>
+<div class="word-bank" id="bank"></div>
+<button class="check-btn" onclick="check()">檢查任務結果</button>
+<script>
+    const words = ["維持","奮戰","崎嶇","拳擊","癌症","銅牌","屢屢","減少","給予","幼芽","椰子","即使","腐爛","衝擊","鍛造","鍛鍊"].sort(()=>Math.random()-0.5);
+    const bank = document.getElementById('bank');
+    words.forEach(w => {
+        const d = document.createElement('div');
+        d.className = 'word-card'; d.draggable = true; d.innerText = w;
+        d.addEventListener('dragstart', e => e.dataTransfer.setData('text', w));
+        d.addEventListener('click', () => { 
+            const zone = Array.from(document.querySelectorAll('.drop-zone')).find(z => !z.innerText);
+            if(zone) zone.innerText = w;
+        });
+        bank.appendChild(d);
+    });
+    document.querySelectorAll('.drop-zone').forEach(z => {
+        z.addEventListener('dragover', e => e.preventDefault());
+        z.addEventListener('drop', e => z.innerText = e.dataTransfer.getData('text'));
+        z.addEventListener('click', () => z.innerText = "");
+    });
+    function check() {
+        let ok = 0;
+        document.querySelectorAll('.drop-zone').forEach(z => {
+            if(z.innerText === z.dataset.ans) { z.className = 'drop-zone correct'; ok++; }
+            else z.className = 'drop-zone wrong';
+        });
+        alert(ok === 16 ? "全集中！完美達成任務！" : "呼吸亂了！再試一次！");
+    }
+</script>
+</body>
+</html>
